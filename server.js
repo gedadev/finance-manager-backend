@@ -1,3 +1,5 @@
+const express = require('express');
+const cors = require('cors');
 const {MongoClient, ServerApiVersion} = require('mongodb');
 require('dotenv').config();
 
@@ -10,3 +12,23 @@ const client = new MongoClient(uri, {
     deprecationErrors: true,
   },
 });
+
+const app = express();
+app.use(cors());
+
+app.get('/get-expenses', async (req, res) => {
+  try {
+    await client.connect();
+    const database = client.db('finance-data');
+    const collection = database.collection('expenses');
+    const cursor = collection.find({});
+
+    res.send(await cursor.toArray());
+  } catch (error) {
+    console.log(error);
+  } finally {
+    await client.close();
+  }
+});
+
+app.listen('3000', () => console.log('Server is running'));
