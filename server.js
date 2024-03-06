@@ -31,4 +31,18 @@ app.get('/get-expenses', async (req, res) => {
   }
 });
 
+app.get('/get-filters', async (req, res) => {
+  try {
+    await client.connect();
+    const database = client.db('user-data');
+    const collection = database.collection('expenses-props');
+
+    res.send(await collection.findOne({}));
+  } catch (error) {
+    console.log(error);
+  } finally {
+    await client.close();
+  }
+});
+
 app.listen('3000', () => console.log('Server is running'));
