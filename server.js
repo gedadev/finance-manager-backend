@@ -17,11 +17,18 @@ const app = express();
 app.use(cors());
 
 app.get('/get-expenses', async (req, res) => {
+  const {initDate, endDate} = req.query;
+
   try {
     await client.connect();
     const database = client.db('finance-data');
     const collection = database.collection('expenses');
-    const cursor = collection.find({});
+    const cursor = collection.find({
+      date: {
+        $gte: initDate,
+        $lte: endDate,
+      },
+    });
 
     res.send(await cursor.toArray());
   } catch (error) {
