@@ -25,8 +25,8 @@ app.get('/get-expenses', async (req, res) => {
     const collection = database.collection('expenses');
     const cursor = collection.find({
       date: {
-        $gte: initDate,
-        $lte: endDate,
+        $gte: +initDate,
+        $lte: +endDate,
       },
     });
 
