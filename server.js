@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const bodyParser = require('body-parser');
 const {MongoClient, ServerApiVersion} = require('mongodb');
 require('dotenv').config();
 
@@ -15,6 +16,7 @@ const client = new MongoClient(uri, {
 
 const app = express();
 app.use(cors());
+app.use(bodyParser.json());
 
 app.get('/get-expenses', async (req, res) => {
   const {initDate, endDate} = req.query;
@@ -45,6 +47,23 @@ app.get('/get-filters', async (req, res) => {
     const collection = database.collection('expenses-props');
 
     res.send(await collection.findOne({}));
+  } catch (error) {
+    console.log(error);
+  } finally {
+    await client.close();
+  }
+});
+
+app.post('/add-entry', async (req, res)=>{
+  try {
+    const data = req.body;
+
+    await client.connect();
+    const database = client.db('finance-data');
+    const collection = database.collection('expenses');
+    await collection.insertOne(data);
+
+    res.status(200).send('New entry added');
   } catch (error) {
     console.log(error);
   } finally {
