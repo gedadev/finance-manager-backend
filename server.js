@@ -32,11 +32,12 @@ app.get('/get-expenses', async (req, res) => {
       },
     });
 
-    res.send(await cursor.toArray());
+    const data = await cursor.toArray();
+    res.send(data);
   } catch (error) {
     console.log(error);
   } finally {
-    await client.close();
+    setTimeout( async () => await client.close(), 5000);
   }
 });
 
@@ -46,11 +47,12 @@ app.get('/get-filters', async (req, res) => {
     const database = client.db('user-data');
     const collection = database.collection('expenses-props');
 
-    res.send(await collection.findOne({}));
+    const data =await collection.findOne({});
+    res.send(data);
   } catch (error) {
     console.log(error);
   } finally {
-    await client.close();
+    setTimeout( async () => await client.close(), 5000);
   }
 });
 
@@ -67,7 +69,7 @@ app.post('/add-entry', async (req, res)=>{
   } catch (error) {
     console.log(error);
   } finally {
-    await client.close();
+    setTimeout( async () => await client.close(), 5000);
   }
 });
 
