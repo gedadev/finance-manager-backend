@@ -73,4 +73,22 @@ app.post('/add-entry', async (req, res)=>{
   }
 });
 
+app.post('/add-exp-prop', async (req, res)=>{
+  try {
+    const {key, array} = req.body;
+
+    await client.connect();
+    const database = client.db('user-data');
+    const collection = database.collection('expenses-props');
+    const update = {$set: {[key]: array}};
+    await collection.updateOne({}, update);
+
+    res.status(200).send('New option added');
+  } catch (error) {
+    console.log(error);
+  } finally {
+    setTimeout( async () => await client.close(), 5000);
+  }
+});
+
 app.listen('3000', () => console.log('Server is running'));
