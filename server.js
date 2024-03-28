@@ -18,6 +18,14 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
+app.get('/', async (req, res) => {
+  try {
+    res.send('deployment successful');
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 app.get('/get-expenses', async (req, res) => {
   const {initDate, endDate} = req.query;
 
