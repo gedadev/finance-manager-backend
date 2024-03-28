@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const {MongoClient, ServerApiVersion} = require('mongodb');
+const {MongoClient, ServerApiVersion, ObjectId} = require('mongodb');
 require('dotenv').config();
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.hi99b4a.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
@@ -64,6 +64,26 @@ app.post('/add-entry', async (req, res)=>{
     const database = client.db('finance-data');
     const collection = database.collection('expenses');
     await collection.insertOne(data);
+
+    res.status(200).send('New entry added');
+  } catch (error) {
+    console.log(error);
+  } finally {
+    setTimeout( async () => await client.close(), 5000);
+  }
+});
+
+app.post('/update-entry', async (req, res)=>{
+  try {
+    const {data, id} = req.body;
+
+    await client.connect();
+    const database = client.db('finance-data');
+    const collection = database.collection('expenses');
+    await collection.replaceOne(
+        {_id: new ObjectId(String(id))},
+        {...data},
+    );
 
     res.status(200).send('New entry added');
   } catch (error) {
