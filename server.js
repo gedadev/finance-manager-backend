@@ -93,6 +93,25 @@ app.post('/update-entry', async (req, res)=>{
   }
 });
 
+app.post('/delete-entry', async (req, res)=>{
+  try {
+    const {id} = req.body;
+
+    await client.connect();
+    const database = client.db('finance-data');
+    const collection = database.collection('expenses');
+    await collection.deleteOne(
+        {_id: new ObjectId(String(id))},
+    );
+
+    res.status(200).send('Entry deleted');
+  } catch (error) {
+    console.log(error);
+  } finally {
+    setTimeout( async () => await client.close(), 5000);
+  }
+});
+
 app.post('/add-exp-prop', async (req, res)=>{
   try {
     const {key, array} = req.body;
