@@ -85,7 +85,7 @@ app.post('/update-entry', async (req, res)=>{
         {...data},
     );
 
-    res.status(200).send('New entry added');
+    res.status(200).send('Updated successfully');
   } catch (error) {
     console.log(error);
   } finally {
